@@ -170,40 +170,40 @@ verify: Service converged
 The previous command explained: [5]
 
 docker service create: create a Docker Swarm mode service
-+ --name traefik: name the service "traefik"
-+ --constraint=node.labels.traefik-public.traefik-public-certificates==true make it run on a specific node, to be able to use the certificates stored in a volume in that node
-+ --publish 80:80: listen on ports 80 - HTTP
-+ --publish 443:443: listen on port 443 - HTTPS
-+ --mount type=bind,source=/var/run/docker.sock,target=/var/run/docker.sock: communicate with Docker, to read labels, etc.
-+ --mount type=volume,source=traefik-public-certificates,target=/certificates: create a volume to store TLS certificates
-+ --network traefik-public: listen to the specific network traefik-public
-+ --label "traefik.frontend.rule=Host:traefik.$USE_HOSTNAME": enable the Traefik API and dashboard in the host traefik.$USE_HOSTNAME, using the $USE_HOSTNAME environment variable created above
-+ --label "traefik.enable=true": make Traefik expose "itself" as a Docker service, this is what makes the Traefik dashboard available with HTTPS and basic auth
-+ --label "traefik.port=8080": when Traefik exposes itself as a service (for the dashboard), use the internal service port 8080
-+ --label "traefik.tags=traefik-public": as the main Traefik proxy will only expose services with the traefik-public tag (using a parameter below), make the dashboard service have this tag too, so that the Traefik public (itself) can find it and expose it
-+ --label "traefik.docker.network=traefik-public": make the dashboard service use the traefik-public network to expose itself
-+ --label "traefik.redirectorservice.frontend.entryPoints=http": make the web dashboard listen to HTTP, so that it can redirect to HTTPS
-+ --label "traefik.redirectorservice.frontend.redirect.entryPoint=https": make Traefik redirect HTTP trafic to HTTPS for the web dashboard
-+ --label "traefik.webservice.frontend.entryPoints=https": make the web dashboard listen and serve on HTTPS
-+ --label "traefik.frontend.auth.basic.users=${USERNAME}:${HASHED_PASSWORD}": enable basic auth, so that not every one can access your Traefik web dashboard, it uses the username and password created above
-traefik:v1.7: use the image traefik:v1.7
-+ --docker: enable Docker
-+ --docker.swarmmode: enable Docker Swarm Mode
-+ --docker.watch: enable "watch", so it reloads its config based on new stacks and labels
-+ --docker.exposedbydefault=false: don't expose all the services, only services with traefik.enable=true
-+ --constraints=tag==traefik-public: only show services with traefik.tag=traefik-public, to isolate from possible intra-stack traefik instances
-+ --entrypoints='Name:http Address::80': create an entrypoint http, on port 80
-+ --entrypoints='Name:https Address::443 TLS': create an entrypoint https, on port 443 with TLS enabled
-+ --acme: enable Let's encrypt
-+ --acme.email=$EMAIL: let's encrypt email, using the environment variable
-+ --acme.storage=/certificates/acme.json: where to store the Let's encrypt TLS certificates - in the mapped volume
-+ --acme.entryPoint=https: the entrypoint for Let's encrypt - created above
-+ --acme.httpChallenge.entryPoint=http: use HTTP for the ACME (Let's Encrypt HTTPS certificates) challenge, as HTTPS was disabled after a security issue
-+ --acme.onhostrule=true: get new certificates automatically with host rules: "traefik.frontend.rule=Host:web.example.com"
-+ --acme.acmelogging=true: log Let's encrypt activity - to debug when and if it gets certificates
-+ --logLevel=INFO: default logging, if the web UI is not enough to debug configurations and hosts detected, or you want to see more of the logs, set it to DEBUG. Have in mind that after some time it might affect performance.
-+ --accessLog: enable the access log, to see and debug HTTP traffic
-+ --api: enable the API, which includes the dashboard
+
+- --name traefik: name the service "traefik"
+- --constraint=node.labels.traefik-public.traefik-public-certificates==true make it run on a specific node to be able to use the certificates stored in a volume in that node
+- --publish 80:80: listen on ports 80 - HTTP
+- --publish 443:443: listen on port 443 - HTTPS
+- --mount type=bind,source=/var/run/docker.sock,target=/var/run/docker.sock: communicate with Docker, to read labels, etc.
+- --mount type=volume,source=traefik-public-certificates,target=/certificates: create a volume to store TLS certificates
+- --network traefik-public: listen to the specific network traefik-public
+- --label "traefik.frontend.rule=Host: traefik.USE_HOSTNAME": enable the Traefik API and dashboard in the host traefik.USE_HOSTNAME, using the USE_HOSTNAME environment variable created above
+- --label "traefik.enable=true": make Traefik expose "itself" as a Docker service, this is what makes the Traefik dashboard available with HTTPS and basic auth
+- --label "traefik.port=8080": when Traefik exposes itself as a service (for the dashboard), use the internal service port 8080
+- --label "traefik.tags=traefik-public": as the main Traefik proxy will only expose services with the traefik-public tag (using a parameter below), make the dashboard service have this tag too, so that the Traefik public (itself) can find it and expose it
+- --label "traefik.docker.network=traefik-public": make the dashboard service use the traefik-public network to expose itself
+- --label "traefik.redirectorservice.frontend.entryPoints=http": make the web dashboard listen to HTTP, so that it can redirect to HTTPS
+- --label "traefik.redirectorservice.frontend.redirect.entryPoint=https": make Traefik redirect HTTP trafic to HTTPS for the web dashboard
+- --label "traefik.webservice.frontend.entryPoints=https": make the web dashboard listen and serve on HTTPS
+- --label "traefik.frontend.auth.basic.users=${USERNAME}:${HASHED_PASSWORD}": enable basic auth, so that not every one can access your Traefik web dashboard, it uses the username and password created above traefik:v1.7: use the image traefik:v1.7
+- --docker: enable Docker
+- --docker.swarmmode: enable Docker Swarm Mode
+- --docker.watch: enable "watch", so it reloads its config based on new stacks and labels
+- --docker.exposedbydefault=false: don't expose all the services, only services with traefik.enable=true
+- --constraints=tag==traefik-public: only show services with traefik.tag=traefik-public, to isolate from possible intra-stack traefik instances
+- --entrypoints='Name:http Address::80': create an entrypoint http, on port 80
+- --entrypoints='Name:https Address::443 TLS': create an entrypoint https, on port 443 with TLS enabled
+- --acme: enable Let's encrypt
+- --acme.email=$EMAIL: let's encrypt email, using the environment variable
+- --acme.storage=/certificates/acme.json: where to store the Let's encrypt TLS certificates - in the mapped volume
+- --acme.entryPoint=https: the entrypoint for Let's encrypt - created above
+- --acme.httpChallenge.entryPoint=http: use HTTP for the ACME (Let's Encrypt HTTPS certificates) challenge as HTTPS was disabled after a security issue
+- --acme.onhostrule=true: get new certificates automatically with host rules: "traefik.frontend.rule =Host:web.example.com"
+- --acme.acmelogging=true: log Let's encrypt activity - to debug when and if it gets certificates
+- --logLevel=INFO: default logging, if the web UI is not enough to debug configurations and hosts detected or you want to see more of the logs, set it to DEBUG. Have in mind that after some time it might affect performance.
+- --accessLog: enable the access log, to see and debug HTTP traffic
+- --api: enable the API, which includes the dashboard
 
 
 Amb totes aquestes opcions se li ha passat part de la configuració així com se li ha enllaçat els ports de l'exterior amb els de l'interior de la xarxa (80 i 443).  Se li ha assignat el volum, se li ha dit que gestioni els certificats digitals amb let's encrypt i se li ha activat la API. 
