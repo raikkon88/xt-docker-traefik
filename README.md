@@ -1,10 +1,21 @@
+---
+title: "Reverse proxy per docker"
+author: [Marc Sànchez Pifarré, GEINF (UDG-EPS)]
+date: 10 de desembre de 2019
+subject: "Xarxes troncals"
+tags: [Docker, Xarxes troncals]
+subtitle: "Tutor de la pràctica : Lluís Fàbrega"
+titlepage: true
+titlepage-color: 06386e
+titlepage-text-color: FFFFFF
+titlepage-rule-height: 4
+...
 
-
-# Traefik - Proxy
-
-En aquesta última part completarem tot el procés posant en pràctica el que s'ha treballat a les sessions anteriors i farem el què se'n diu, posar-ho a producció.
+\newpage
 
 # Objectius 
+
+En aquesta última part completarem tot el procés posant en pràctica el que s'ha treballat a les sessions anteriors i farem el què se'n diu, posar-ho a producció.
 
 - Crear un domini a internet
 - Crear una màquina a internet i assignar-li el domini
